@@ -34,7 +34,7 @@ app.get('/api/tasks', async (req, res) => {
 
     if (error) throw error;
 
-    const items: Task[] = (data || []).map((row) => ({
+    const items: Task[] = (data || []).map((row: any) => ({
       id: row.id,
       title: row.title,
       priority: row.priority as TaskPriority,
@@ -128,15 +128,15 @@ app.delete('/api/tasks/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { error, count } = await supabase
+    const { data, error } = await supabase
       .from('tasks')
       .delete()
       .eq('id', id)
-      .select('id', { count: 'exact', head: true });
+      .select('id');
 
     if (error) throw error;
 
-    if (count === 0) {
+    if (!data || data.length === 0) {
       return res.status(404).json({ error: { code: 'NOT_FOUND', message: '任务不存在' } });
     }
 

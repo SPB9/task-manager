@@ -9,12 +9,20 @@
     "outDir": "./dist/server",
     "rootDir": "./",
     "baseUrl": ".",
-    "paths": {
-      "@server/*": ["server/*"],
-      "@shared/*": ["shared/*"]
-    },
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "/home/gem/workspace/code/node_modules/@types"
+    ]
   },
-  "include": ["server/**/*", "shared/**/*.ts"],
-  "exclude": ["node_modules", "dist", "client"]
+  "include": [
+    "server/**/*",
+    "shared/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "client"
+  ]
 }
