@@ -55,7 +55,7 @@ app.post('/api/tasks', async (req, res) => {
       return res.status(400).json({ error: { code: 'BAD_REQUEST', message: '任务标题不能为空' } });
     }
     if (!priority || !['high', 'medium', 'low'].includes(priority)) {
-      return res.status(400).json({ error: { code: 'BAD_REQUEST', message: '无效的优先级' } });
+      return res.status(400).json({ error: { code: 'BAD_REQUEST', message: `无效的优先级：${priority || '空'}，必须是 high / medium / low` } });
     }
 
     const { data, error } = await supabase
