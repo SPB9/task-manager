@@ -1,13 +1,10 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 import type { Task, TaskPriority, TaskListResponse, CreateTaskRequest } from '../shared/api.interface';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
 app.use(cors());
 app.use(express.json());
 
@@ -44,9 +41,9 @@ app.get('/api/tasks', async (req, res) => {
 
     const response: TaskListResponse = { items };
     res.json(response);
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取任务失败:', error);
-    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: '获取任务失败' } });
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: error?.message || String(error) } });
   }
 });
 
@@ -78,9 +75,9 @@ app.post('/api/tasks', async (req, res) => {
     };
 
     res.status(201).json(task);
-  } catch (error) {
+  } catch (error: any) {
     console.error('创建任务失败:', error);
-    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: '创建任务失败' } });
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: error?.message || String(error) } });
   }
 });
 
@@ -120,7 +117,7 @@ app.patch('/api/tasks/:id', async (req, res) => {
       return res.status(404).json({ error: { code: 'NOT_FOUND', message: '任务不存在' } });
     }
     console.error('更新任务失败:', error);
-    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: '更新任务失败' } });
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: error?.message || String(error) } });
   }
 });
 
@@ -146,7 +143,7 @@ app.delete('/api/tasks/:id', async (req, res) => {
       return res.status(404).json({ error: { code: 'NOT_FOUND', message: '任务不存在' } });
     }
     console.error('删除任务失败:', error);
-    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: '删除任务失败' } });
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: error?.message || String(error) } });
   }
 });
 
@@ -154,14 +151,4 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-if (process.env.NODE_ENV === 'production') {
-  const clientDist = path.join(__dirname, '../client');
-  app.use(express.static(clientDist));
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'));
-  });
-}
-
-app.listen(PORT, () => {
-  console.log(`服务器运行在 http://localhost:${PORT}`);
-});
+export default app;
